@@ -1,0 +1,80 @@
+---
+title: "session33"
+author: "Dianah Okia"
+date: "1/13/2020"
+output:
+  word_document: default
+  html_document: default
+---
+
+---
+#importing dataset
+```{r}
+library(tidyverse)
+mobile2<-read_csv("https://raw.githubusercontent.com/vmandela99/Class-assignment-12th-july-2019/master/mobilemoney_data.csv")
+```
+
+##report on summary
+
+skimr::skim(mobile2)
+
+the data has 2509 number of rows and 28 number of columns
+the pipe fxn(%>%) means "then"
+
+```{r}
+#how many account types are there
+mobile2 %>% count(account_type) %>% ggplot(aes(x=account_type,y=n)) + geom_col()
+```
+
+the account types are 7
+825 people have mobile money account, 669 have VSLA account,467 have SACCO account,
+323 have bank account,82 have MFI account, 12 have online bank account and 131 have none
+
+#which districts have many people?
+
+```{r}
+#which districts have many people?
+mobile2 %>% count(district) %>% ggplot(aes(x=district,y=n)) + geom_col()
+```
+
+District C has the most people. It has 856 people. It is followed by district B,which has 838 people and then District A which has 815 people.
+for question 1 and 2 we were focusing on the function "count". for qsn 3 onwards we introduce mutate fxn
+
+```{r}
+#what percentage of people from district A have accounts
+mobile2 %>% count(district) %>% mutate(percent = n/sum(n)*100)
+```
+32% of pple in district A have accounts,33% in district B and 34% in district C
+
+```{r}
+#what percentage of people have SACCO accounts from district A, in the entire data?
+mobile2 %>% count(district,account_type) %>% mutate(percent = n/sum(n)*100)
+```
+
+In the entire data,5.8987% of people who have SACCO account are from district A
+
+```{r}
+#What percentage of people from district A have SACCO accounts
+#we introduce filter function to answer the question
+mobile2 %>% filter(district == "District_A") %>% count(account_type) %>% mutate(percent = n/sum(n)*100) %>% ggplot(aes(x=account_type, y=n)) + geom_col()
+
+```
+18.15% of people in District A have SACCO  account
+
+```{r}
+#how many grades completed are there
+mobile2 %>% count(highest_grade_completed) %>% ggplot(aes(x= highest_grade_completed, y= n)) +geom_col()
+```
+Grades completed are 16, with primary 6 being the grade completed by the highest number of people(671)
+
+```{r}
+#what is the largest weight in the survey
+max(mobile2$weight)
+```
+The largest weight in the survey is 4812.165
+
+```{r}
+#what percentage of people ar ein university and have mobile money accounts
+mobile2 %>% filter(highest_grade_completed == "university") %>% count(account_type) %>% mutate(percent = n/sum(n)*100)
+```
+32.39% of people in university have mobile money account
